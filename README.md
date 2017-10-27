@@ -14,7 +14,7 @@ Wechat oauth2 specification can be found at: http://mp.weixin.qq.com/wiki/index.
 Add to your `Gemfile`:
 
 ```ruby
-gem "omniauth-wechat-oauth2"
+gem "omniauth-wechatpc-oauth2"
 ```
 
 Then `bundle install`.
@@ -26,7 +26,7 @@ Here's an example for adding the middleware to a Rails app in `config/initialize
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :wechat, ENV["WECHAT_APP_ID"], ENV["WECHAT_APP_SECRET"]
+  provider :wechatpc, ENV["WECHAT_APP_ID"], ENV["WECHAT_APP_SECRET"]
 end
 ```
 
@@ -36,13 +36,12 @@ You can now access the OmniAuth Wechat OAuth2 URL: `/auth/wechat`
 
 You can configure several options, which you pass in to the `provider` method via a hash:
 
-* `scope`: Default is "snsapi_userinfo". It can either be *snsapi_base* or *snsapi_userinfo*. When scope is "snsapi_userinfo", after wechat user is authenticated, app can query userinfo using the acquired access_token.
+* `scope`: Default is "snsapi_login"
 
 For devise user, you can set up scope in your devise.rb as following.
 
 ```ruby
-config.omniauth :wechat, ENV["WECHAT_APP_ID"], ENV["WECHAT_APP_SECRET"],
-    :authorize_params => {:scope => "snsapi_base"}
+config.omniauth :wechatpc, ENV["WECHAT_APP_ID"], ENV["WECHAT_APP_SECRET"]
 ```
 
 ## Auth Hash
@@ -51,7 +50,7 @@ Here's an example of an authentication hash available in the callback by accessi
 
 ```ruby
 {
-    :provider => "wechat",
+    :provider => "wechatpc",
     :uid => "123456789",
     :info => {
       nickname:   "Nickname",

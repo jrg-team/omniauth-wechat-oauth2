@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe OmniAuth::Strategies::Wechat do
+describe OmniAuth::Strategies::Wechatpc do
   let(:request) { double('Request', :params => {}, :cookies => {}, :env => {}, :scheme=>"http", :url=>"localhost") }
   let(:app) { ->{[200, {}, ["Hello."]]}}
   let(:client){OAuth2::Client.new('appid', 'secret')}
 
   subject do
-    OmniAuth::Strategies::Wechat.new(app, 'appid', 'secret', @options || {}).tap do |strategy|
+    OmniAuth::Strategies::Wechatpc.new(app, 'appid', 'secret', @options || {}).tap do |strategy|
       allow(strategy).to receive(:request) {
         request
       }
@@ -27,7 +27,7 @@ describe OmniAuth::Strategies::Wechat do
     end
 
     specify 'has authorize_url' do
-      expect(subject.client.options[:authorize_url]).to eq('https://open.weixin.qq.com/connect/oauth2/authorize#wechat_redirect')
+      expect(subject.client.options[:authorize_url]).to eq('https://open.weixin.qq.com/connect/qrconnect')
     end
 
     specify 'has token_url' do
@@ -37,7 +37,7 @@ describe OmniAuth::Strategies::Wechat do
 
   describe "#authorize_params" do
     specify "default scope is snsapi_userinfo" do
-      expect(subject.authorize_params[:scope]).to eq("snsapi_userinfo")
+      expect(subject.authorize_params[:scope]).to eq("snsapi_login")
     end
   end
 
@@ -62,12 +62,10 @@ describe OmniAuth::Strategies::Wechat do
       subject.stub(:callback_url=>callback_url)
       subject.should_receive(:redirect).with do |redirect_url|
         uri = URI.parse(redirect_url)
-        expect(uri.fragment).to eq("wechat_redirect")
         params = CGI::parse(uri.query)
         expect(params["appid"]).to eq(['appid'])
         expect(params["redirect_uri"]).to eq([callback_url])
         expect(params["response_type"]).to eq(['code'])
-        expect(params["scope"]).to eq(['snsapi_userinfo'])
         expect(params["state"]).to eq([subject.session['omniauth.state']])
       end
 
