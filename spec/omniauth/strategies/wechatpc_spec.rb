@@ -36,7 +36,7 @@ describe OmniAuth::Strategies::Wechatpc do
   end
 
   describe "#authorize_params" do
-    specify "default scope is snsapi_userinfo" do
+    specify "default scope is snsapi_login" do
       expect(subject.authorize_params[:scope]).to eq("snsapi_login")
     end
   end
@@ -91,23 +91,10 @@ describe OmniAuth::Strategies::Wechatpc do
     let(:access_token) { OAuth2::AccessToken.from_hash(client, {}) }
     before { subject.stub(:access_token => access_token) }
 
-    context "when scope is snsapi_base" do
+    context "when scope is snsapi_login" do
       let(:access_token) { OAuth2::AccessToken.from_hash(client, {
         "openid"=>"openid", 
-        "scope"=>"snsapi_base", 
-        "access_token"=>"access_token"
-      })}
-
-      specify "only have openid" do
-        expect(subject.uid).to eq("openid")
-        expect(subject.raw_info).to eq("openid" => "openid")
-      end
-    end
-
-    context "when scope is snsapi_userinfo" do
-      let(:access_token) { OAuth2::AccessToken.from_hash(client, {
-        "openid"=>"openid", 
-        "scope"=>"snsapi_userinfo", 
+        "scope"=>"snsapi_login", 
         "access_token"=>"access_token"
       })}
 
